@@ -1,12 +1,13 @@
 import "@radix-ui/themes/styles.css";
+import './theme-config.css';//custom font family using radix-ui
 import { Theme } from "@radix-ui/themes";
+import {Roboto, Geist_Mono} from "next/font/google";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/NavBar";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const roboto = Roboto({
+  variable: "--font-roboto",
   subsets: ["latin"],
 });
 
@@ -26,13 +27,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" >
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${roboto.variable} ${geistMono.variable} antialiased`}
       >
-        <Theme>
+        <Theme accentColor="teal" grayColor="sand" radius="large">
           <NavBar />
           <main className="p-4">{children}</main>
+          {/* <ThemePanel /> */}
         </Theme>
       </body>
     </html>
