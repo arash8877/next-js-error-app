@@ -1,7 +1,6 @@
 "use client";
 
 import { TextField, Button } from "@radix-ui/themes";
-import axios from "axios";
 import "easymde/dist/easymde.min.css";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
@@ -21,14 +20,17 @@ const NewIssuePage = () => {
   const { register, control, handleSubmit } = useForm<iIssueForm>();
   const router = useRouter();
 
-
   //-------------------- JSX --------------------
   return (
     <form
       className="max-w-2xl space-y-4"
       onSubmit={handleSubmit((data) => {
-        console.log(data);
-        router.push("/issues");
+        try {
+          console.log(data);
+          router.push("/issues");
+        } catch (error) {
+          console.log(error);
+        }
       })}
     >
       <TextField.Root
