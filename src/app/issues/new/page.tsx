@@ -1,26 +1,33 @@
 "use client";
 
 import { useState } from "react";
-import { TextField, Button, Callout } from "@radix-ui/themes";
+import { TextField, Button, Callout, Text } from "@radix-ui/themes";
 import "easymde/dist/easymde.min.css";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 // Dynamic import with SSR disabled
 const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
   ssr: false,
 });
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createIssueSchema } from "@/components/ValidationSchemas";
+import { z } from "zod";
 
-interface iIssueForm {
-  title: string;
-  description: string;
-}
+type iIssueForm = z.infer<typeof createIssueSchema>;
 
 //------------------------- NewIssuePage -------------------------
 const NewIssuePage = () => {
   const [error, setError] = useState("");
-  const { register, control, handleSubmit } = useForm<iIssueForm>();
-  const router = useRouter();
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<iIssueForm>({
+    resolver: zodResolver(createIssueSchema),
+  });
+  // const router = useRouter();
 
   //-------------------- JSX --------------------
   return (
@@ -31,7 +38,7 @@ const NewIssuePage = () => {
         </Callout.Root>
       )}
       <form
-        className="space-y-4"
+        className="space-y-8"
         onSubmit={handleSubmit((data) => {
           try {
             console.log(data);
@@ -48,13 +55,28 @@ const NewIssuePage = () => {
           radius="medium"
           {...register("title")}
         />
+        {errors.title && (
+          <Text color="red" as="p">
+            {errors.title.message}
+          </Text>
+        )}
         <Controller
           name="description"
           control={control}
           render={({ field }) => (
-            <SimpleMDE placeholder="Description" {...field} />
+            <SimpleMDE
+              placeholder="Description"
+              {...field}
+              options={{ status: false }}
+            />
           )}
         />
+        {errors.description && (
+          <Text color="red" as="p" className="-pt-4">
+            {errors.description.message}
+          </Text>
+        )}
+
         {/* <SimpleMDE placeholder="Description" /> */}
         <Button>Submit New Issue</Button>
       </form>
