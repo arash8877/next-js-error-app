@@ -3,9 +3,12 @@ import Link from "next/link";
 
 const IssuesPage = () => {
   return (
-    <Button>
-      <Link href="issues/new">New Issue</Link>
-    </Button>
+    <div>
+      <h1 className="mb-4">Issues Page</h1>
+      <Button>
+        <Link href="issues/new">New Issue</Link>
+      </Button>
+    </div>
   );
 };
 

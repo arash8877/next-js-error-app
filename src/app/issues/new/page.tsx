@@ -1,28 +1,51 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { TextField, Button } from "@radix-ui/themes";
+import axios from "axios";
 import "easymde/dist/easymde.min.css";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
+import { useForm, Controller } from "react-hook-form";
 // Dynamic import with SSR disabled
 const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
   ssr: false,
 });
 
+interface iIssueForm {
+  title: string;
+  description: string;
+}
+
 //------------------------- NewIssuePage -------------------------
 const NewIssuePage = () => {
-  const [isClient, setIsClient] = useState(false);
+  const { register, control, handleSubmit } = useForm<iIssueForm>();
+  const router = useRouter();
 
-  // Ensure this only renders on the client side
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+
+  //-------------------- JSX --------------------
   return (
-    <div className="max-w-2xl space-y-4">
-      <TextField.Root placeholder="Title" radius="medium" />
-      {isClient && <SimpleMDE placeholder="Description" />}
+    <form
+      className="max-w-2xl space-y-4"
+      onSubmit={handleSubmit((data) => {
+        console.log(data);
+        router.push("/issues");
+      })}
+    >
+      <TextField.Root
+        placeholder="Title"
+        radius="medium"
+        {...register("title")}
+      />
+      <Controller
+        name="description"
+        control={control}
+        render={({ field }) => (
+          <SimpleMDE placeholder="Description" {...field} />
+        )}
+      />
+      {/* <SimpleMDE placeholder="Description" /> */}
       <Button>Submit New Issue</Button>
-    </div>
+    </form>
   );
 };
 
