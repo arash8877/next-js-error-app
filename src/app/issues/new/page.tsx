@@ -22,6 +22,7 @@ type iIssueForm = z.infer<typeof createIssueSchema>;
 const NewIssuePage = () => {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // const router = useRouter();
   const {
     register,
     control,
@@ -30,7 +31,19 @@ const NewIssuePage = () => {
   } = useForm<iIssueForm>({
     resolver: zodResolver(createIssueSchema),
   });
-  // const router = useRouter();
+
+  const handleFormSubmit = handleSubmit((data) => {
+    try {
+      setIsSubmitting(true);
+      console.log(data);
+      setError("No API exist yet !");
+      // router.push("/issues");
+    } catch (error) {
+      setIsSubmitting(false);
+      setError("Something went wrong!");
+      console.log("Error: ", error);
+    }
+  });
 
   //-------------------- JSX --------------------
   return (
@@ -40,21 +53,7 @@ const NewIssuePage = () => {
           <Callout.Text>{error}</Callout.Text>
         </Callout.Root>
       )}
-      <form
-        className="space-y-8"
-        onSubmit={handleSubmit((data) => {
-          try {
-            setIsSubmitting(true);
-            console.log(data);
-            setError("No API exist yet !");
-            // router.push("/issues");
-          } catch (error) {
-            setIsSubmitting(false);
-            setError("Something went wrong!");
-            console.log("Error: ", error);
-          }
-        })}
-      >
+      <form className="space-y-8" onSubmit={handleFormSubmit}>
         <TextField.Root
           placeholder="Title"
           radius="medium"
